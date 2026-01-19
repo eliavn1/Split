@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>קיזוז הוצאות משותף</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-cyan: #00fff9;
+            --neon-purple: #bc13fe;
+            --neon-pink: #ff006e;
+            --neon-blue: #3d5afe;
+            --deep-space: #0a0e27;
+            --dark-navy: #151a33;
+            --glow-cyan: rgba(0, 255, 249, 0.3);
+            --glow-purple: rgba(188, 19, 254, 0.3);
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            background: linear-gradient(135deg, var(--deep-space) 0%, #1a1f3a 50%, #0d1128 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, var(--glow-purple) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, var(--glow-cyan) 0%, transparent 50%);
+            pointer-events: none;
+            animation: pulseGlow 8s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
+            bottom: 20%;
+            left: 15%;
+            animation-delay: -5s;
+        }
+
+        .orb3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, var(--neon-pink) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(100px, -100px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-100px, 100px) rotate(240deg);
+            }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px var(--glow-cyan);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.3);
+            }
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+        }
+
+        .reset-btn {
+            margin-top: 20px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, rgba(0, 255, 127, 0.2), rgba(0, 200, 150, 0.2));
+            border: 2px solid rgba(0, 255, 127, 0.5);
+            border-radius: 12px;
+            color: #00ff7f;
+            font-family: 'Assistant', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
+            border-color: #00ff7f;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: rgba(21, 26, 51, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 2px solid rgba(255, 0, 110, 0.5);
+            box-shadow: 0 20px 60px rgba(255, 0, 110, 0.3);
+            max-width: 500px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff006e;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .modal-warning {
+            background: rgba(255, 165, 0, 0.1);
+            border: 2px solid rgba(255, 165, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #ffa500;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .modal-input-group {
+            margin-bottom: 25px;
+        }
+
+        .modal-input-label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(10, 14, 39, 0.8);
+            border: 2px solid rgba(255, 0, 110, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'Assistant', sans-serif;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .modal-input:focus {
+            border-color: #ff006e;
+            box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Assistant', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .modal-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .modal-btn-confirm {
+            background: linear-gradient(135deg, #00ff7f, #00c896);
+            color: #ffffff;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-btn-confirm.enabled {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .modal-btn-confirm.enabled:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 127, 0.5);
+        }
+
+        .success-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, rgba(0, 255, 127, 0.95), rgba(0, 200, 150, 0.95));
+            backdrop-filter: blur(20px);
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            box-shadow: 0 0 60px rgba(0, 255, 127, 0.8);
+            animation: successPop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes successPop {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+                opacity: 1;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(0.9) rotate(360deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        .success-notification.hide {
+            animation: successFadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes successFadeOut {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            animation: checkBounce 0.6s ease-in-out 0.3s;
+        }
+
+        @keyframes checkBounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        .success-text {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-particles {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1999;
+        }
+
+        .particle {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            animation: particleExplode 1.5s ease-out forwards;
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        @keyframes particleExplode {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(1080deg);
+                opacity: 0;
+            }
+        }
+
+        .entry-card.just-added {
+            animation: slideInHighlight 0.6s ease-out;
+        }
+
+        @keyframes slideInHighlight {
+            0% {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+            60% {
+                transform: translateX(-10px);
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .recurring-section {
+            margin-bottom: 40px;
+        }
+
+        .recurring-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recurring-card {
+            background: linear-gradient(135deg, rgba(188, 19, 254, 0.1), rgba(0, 255, 249, 0.1));
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 10px 40px rgba(188, 19, 254, 0.3);
+            margin-bottom: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .recurring-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(188, 19, 254, 0.5);
+        }
+
+        .recurring-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 5px 15px rgba(188, 19, 254, 0.4);
+        }
+
+        .recurring-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recurring-info h3 {
+            font-size: 1.4rem;
+            color: var(--neon-cyan);
+            margin-bottom: 8px;
+        }
+
+        .recurring-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .recurring-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-purple);
+            text-shadow: 0 0 20px var(--glow-purple);
+        }
+
+        .recurring-delete-btn {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 0, 110, 0.2);
+            border: 2px solid rgba(255, 0, 110, 0.4);
+            border-radius: 8px;
+            color: #ff006e;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .recurring-delete-btn:hover {
+            background: rgba(255, 0, 110, 0.3);
+            border-color: #ff006e;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 0, 110, 0.5);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+            border-radius: 8px;
+            color: #ff4444;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff4444;
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .entry-card {
+            position: relative;
+            background: rgba(21, 26, 51, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            padding-right: 60px;
+            border: 1px solid rgba(0, 255, 249, 0.2);
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .form-card {
+            background: rgba(21, 26, 51, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(0, 255, 249, 0.2);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(10, 14, 39, 0.8);
+            border: 2px solid rgba(0, 255, 249, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'Assistant', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 
+                0 0 20px var(--glow-cyan),
+                inset 0 0 10px rgba(0, 255, 249, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 14px 24px;
+            background: rgba(10, 14, 39, 0.6);
+            border: 2px solid rgba(0, 255, 249, 0.3);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            background: linear-gradient(135deg, rgba(0, 255, 249, 0.2), rgba(188, 19, 254, 0.2));
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px var(--glow-cyan);
+            transform: scale(1.05);
+        }
+
+        .radio-label:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-2px);
+        }
+
+        .calculated-value {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 255, 249, 0.1), rgba(188, 19, 254, 0.1));
+            border: 2px solid var(--neon-purple);
+            border-radius: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            justify-content: center;
+            box-shadow: 0 0 30px var(--glow-purple);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 30px var(--glow-purple);
+            }
+            50% {
+                box-shadow: 0 0 50px var(--glow-purple), 0 0 80px var(--glow-cyan);
+            }
+        }
+
+        .readonly-field {
+            background: rgba(0, 255, 249, 0.05);
+            border-color: rgba(0, 255, 249, 0.5);
+            color: var(--neon-cyan);
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+            border: none;
+            border-radius: 16px;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 255, 249, 0.3);
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 40px rgba(0, 255, 249, 0.5),
+                0 0 50px var(--glow-cyan);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .entries-section {
+            margin-top: 60px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .entries-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .entries-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .summary-card {
+            background: rgba(21, 26, 51, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            padding: 20px;
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 249, 0.2);
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .month-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(0, 255, 249, 0.2), rgba(188, 19, 254, 0.2));
+            border: 2px solid var(--neon-cyan);
+            border-radius: 12px;
+            color: var(--neon-cyan);
+            font-family: 'Assistant', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .month-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--glow-cyan);
+        }
+
+        .mika-warning {
+            background: rgba(255, 165, 0, 0.1);
+            border: 2px solid rgba(255, 165, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #ffa500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mika-warning strong {
+            color: #ff8c00;
+        }
+
+        .entries-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .entry-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 249, 0.2);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .entry-category {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--neon-cyan);
+        }
+
+        .entry-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neon-pink);
+        }
+
+        .entry-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .entry-detail {
+            font-size: 0.9rem;
+        }
+
+        .entry-detail-label {
+            color: rgba(255, 255, 255, 0.5);
+            margin-left: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-card {
+                padding: 25px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>קיזוז הוצאות</h1>
+            <p>מערכת ניהול תשלומים משותפים</p>
+            <button type="button" class="reset-btn" id="resetBtn">✅ סגירת קיזוז</button>
+        </div>
+
+        <div class="form-card">
+            <form id="expenseForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">על מה</label>
+                        <select class="form-select" id="category" required>
+                            <option value="">בחר קטגוריה...</option>
+                            <option value="ביגוד והנעלה">ביגוד והנעלה</option>
+                            <option value="חוגים">חוגים</option>
+                            <option value="טיפולים ושיעורים פרטיים">טיפולים ושיעורים פרטיים</option>
+                            <option value="מיקה">מיקה</option>
+                            <option value="תרופות">תרופות</option>
+                            <option value="מתנות לחברים">מתנות לחברים</option>
+                            <option value="תשלומי בית ספר">תשלומי בית ספר</option>
+                            <option value="ציוד בית ספר">ציוד בית ספר</option>
+                            <option value="אחר">אחר</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">תשלום קבוע</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="recurringYes" name="recurring" value="yes">
+                                <label class="radio-label" for="recurringYes">כן</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="recurringNo" name="recurring" value="no" checked>
+                                <label class="radio-label" for="recurringNo">לא</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">כמה עלה (₪)</label>
+                        <input type="number" class="form-input" id="amount" placeholder="הכנס סכום..." step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">תיאור נוסף</label>
+                        <input type="text" class="form-input" id="description" placeholder="הכנס תיאור (אופציונלי)...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">תאריך</label>
+                        <input type="text" class="form-input readonly-field" id="date" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">לקזז בחצי</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="halfYes" name="splitHalf" value="yes" checked>
+                                <label class="radio-label" for="halfYes">כן</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="halfNo" name="splitHalf" value="no">
+                                <label class="radio-label" for="halfNo">לא</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">סכום הקיזוז</label>
+                        <div class="calculated-value" id="offsetAmount">₪0.00</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">מי שילם</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="payerInbal" name="payer" value="ענבל">
+                                <label class="radio-label" for="payerInbal">ענבל</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="payerEliav" name="payer" value="אליאב">
+                                <label class="radio-label" for="payerEliav">אליאב</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">הוסף רשומה</button>
+            </form>
+        </div>
+
+        <div class="entries-section">
+            <div class="entries-header">
+                <h2 class="entries-title">רשומות</h2>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <select class="form-select" id="monthFilter" style="width: auto; min-width: 200px;">
+                    </select>
+                    <button type="button" class="month-btn" id="currentMonthBtn">החודש הנוכחי</button>
+                </div>
+            </div>
+
+            <div class="summary-card" id="summaryCard" style="display: none;">
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">סה"כ ענבל שילמה</div>
+                        <div class="summary-value" id="inbalTotal">₪0.00</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">סה"כ אליאב שילם</div>
+                        <div class="summary-value" id="eliavTotal">₪0.00</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">יתרה לקיזוז</div>
+                        <div class="summary-value" id="balance">₪0.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recurring-section" id="recurringSection" style="display: none;">
+                <h3 class="recurring-title">🔄 תשלומים קבועים</h3>
+                <div id="recurringList"></div>
+            </div>
+
+            <div class="entries-list" id="entriesList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">💫</div>
+                    <p>עדיין אין רשומות. הוסף את הרשומה הראשונה!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize date
+        function updateDateTime() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const dateStr = `${day}.${month}.${year}`;
+            document.getElementById('date').value = dateStr;
+        }
+
+        updateDateTime();
+
+        // Set default payer to ענבל
+        document.getElementById('payerInbal').checked = true;
+
+        // Display recurring payments
+        function displayRecurringPayments() {
+            const recurringSection = document.getElementById('recurringSection');
+            const recurringList = document.getElementById('recurringList');
+            
+            if (recurringPayments.length === 0) {
+                recurringSection.style.display = 'none';
+                return;
+            }
+            
+            recurringSection.style.display = 'block';
+            recurringList.innerHTML = recurringPayments.map(payment => `
+                <div class="recurring-card">
+                    <div class="recurring-badge">קבוע 🔄</div>
+                    <button class="recurring-delete-btn" onclick="deleteRecurringPayment('${payment.id}')">🗑️</button>
+                    <div class="recurring-content">
+                        <div class="recurring-info">
+                            <h3>${payment.category}</h3>
+                            <p>${payment.description || 'אין תיאור'} • ${payment.payer}</p>
+                            <p style="margin-top: 5px; color: var(--neon-purple);">קיזוז: ₪${payment.offsetAmount.toFixed(2)} ${payment.splitHalf === 'yes' ? '(חצי)' : '(מלא)'}</p>
+                        </div>
+                        <div class="recurring-amount">₪${payment.amount.toFixed(2)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Delete recurring payment
+        window.deleteRecurringPayment = function(paymentId) {
+            if (confirm('האם למחוק תשלום קבוע זה?\n\nהתשלום לא ייווצר אוטומטית בחודשים הבאים.')) {
+                recurringPayments = recurringPayments.filter(p => p.id != paymentId);
+                localStorage.setItem('recurringPayments', JSON.stringify(recurringPayments));
+                displayRecurringPayments();
+                alert('✅ התשלום הקבוע נמחק!');
+            }
+        };
+
+        // Create entries from recurring payments for new month
+        function checkAndCreateRecurringEntries() {
+            const now = new Date();
+            const currentMonthKey = getCurrentMonthKey();
+            const lastProcessedMonth = localStorage.getItem('lastRecurringProcessed');
+            
+            // Check if we're in a new month and haven't processed yet
+            if (lastProcessedMonth !== currentMonthKey && recurringPayments.length > 0) {
+                console.log('Creating recurring entries for new month:', currentMonthKey);
+                
+                recurringPayments.forEach(payment => {
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const year = now.getFullYear();
+                    const dateStr = `${day}.${month}.${year}`;
+                    
+                    const entry = {
+                        id: Date.now() + Math.random(), // Unique ID
+                        category: payment.category,
+                        description: payment.description,
+                        recurring: 'yes',
+                        date: dateStr,
+                        amount: payment.amount,
+                        splitHalf: payment.splitHalf,
+                        offsetAmount: payment.offsetAmount,
+                        payer: payment.payer
+                    };
+                    
+                    entries.unshift(entry);
+                    sendToGoogleSheets(entry);
+                });
+                
+                localStorage.setItem('expenses', JSON.stringify(entries));
+                localStorage.setItem('lastRecurringProcessed', currentMonthKey);
+                
+                console.log('✅ Recurring entries created for', currentMonthKey);
+            }
+        }
+
+        // Show success animation
+        function showSuccessAnimation() {
+            // Create particles
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'success-particles';
+            document.body.appendChild(particlesContainer);
+
+            // Array of vibrant colors
+            const colors = [
+                '#00fff9', // cyan
+                '#bc13fe', // purple
+                '#ff006e', // pink
+                '#00ff7f', // green
+                '#ffd700', // gold
+                '#ff4500', // orange
+                '#00bfff', // deep sky blue
+                '#ff1493', // deep pink
+                '#ffff00', // yellow
+                '#00ffff', // aqua
+                '#ff69b4', // hot pink
+                '#7fff00'  // chartreuse
+            ];
+
+            // Create 60 particles for full screen coverage
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random angle for full 360 spread
+                const angle = (Math.PI * 2 * i) / 60 + (Math.random() - 0.5) * 0.3;
+                // Much larger distance to reach edges of screen
+                const distance = 300 + Math.random() * 400;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = `${Math.random() * 0.15}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.className = 'success-notification';
+            notification.innerHTML = `
+                <div class="success-icon">✓</div>
+                <div class="success-text">נוסף בהצלחה!</div>
+            `;
+            document.body.appendChild(notification);
+
+            // Remove after animation
+            setTimeout(() => {
+                notification.classList.add('hide');
+                setTimeout(() => {
+                    notification.remove();
+                    particlesContainer.remove();
+                }, 500);
+            }, 1800);
+        }
+
+        // Update offset amount when amount or split option changes
+        const amountInput = document.getElementById('amount');
+        const splitRadios = document.querySelectorAll('input[name="splitHalf"]');
+        const offsetAmountDisplay = document.getElementById('offsetAmount');
+
+        function updateOffsetAmount() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const splitHalf = document.querySelector('input[name="splitHalf"]:checked').value;
+            const category = document.getElementById('category').value;
+            let offset = splitHalf === 'yes' ? amount / 2 : amount;
+
+            // Check Mika cap for current month
+            if (category === 'מיקה') {
+                const currentMonthKey = getCurrentMonthKey();
+                const currentMikaTotal = getMikaOffsetForMonth(currentMonthKey);
+                const remainingMikaCap = Math.max(0, 200 - currentMikaTotal);
+                
+                if (offset > remainingMikaCap) {
+                    offset = remainingMikaCap;
+                    
+                    // Show warning
+                    let warning = document.getElementById('mikaWarning');
+                    if (!warning) {
+                        warning = document.createElement('div');
+                        warning.id = 'mikaWarning';
+                        warning.className = 'mika-warning';
+                        offsetAmountDisplay.parentElement.appendChild(warning);
+                    }
+                    warning.innerHTML = `⚠️ <span>תקרת מיקה לחודש: 200 ₪. נותרו: <strong>${remainingMikaCap.toFixed(2)} ₪</strong></span>`;
+                } else {
+                    // Remove warning if exists
+                    const warning = document.getElementById('mikaWarning');
+                    if (warning) warning.remove();
+                }
+            } else {
+                // Remove warning if category is not Mika
+                const warning = document.getElementById('mikaWarning');
+                if (warning) warning.remove();
+            }
+
+            offsetAmountDisplay.textContent = `₪${offset.toFixed(2)}`;
+        }
+
+        amountInput.addEventListener('input', updateOffsetAmount);
+        splitRadios.forEach(radio => radio.addEventListener('change', updateOffsetAmount));
+        document.getElementById('category').addEventListener('change', updateOffsetAmount);
+
+        // Store entries
+        let entries = JSON.parse(localStorage.getItem('expenses') || '[]');
+        let selectedMonth = null; // null = current month
+        let recurringPayments = JSON.parse(localStorage.getItem('recurringPayments') || '[]');
+        
+        // Google Sheets API URL
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzkpemp4mhY-AEknrlg2JQkyfpHZX0cdgu40sS3x_o6KT6xmaYOG9czo3JkI9TJ65dUDQ/exec';
+
+        // Send data to Google Sheets
+        async function sendToGoogleSheets(entry) {
+            try {
+                const response = await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'add',
+                        ...entry,
+                        monthKey: getMonthKey(entry.date)
+                    })
+                });
+                console.log('Sent to Google Sheets');
+                return true;
+            } catch (error) {
+                console.error('Error sending to Google Sheets:', error);
+                return false;
+            }
+        }
+
+        // Send settlement status to Google Sheets
+        async function sendSettlementToGoogleSheets(monthKey) {
+            try {
+                const response = await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'settle',
+                        monthKey: monthKey
+                    })
+                });
+                console.log('Settlement sent to Google Sheets');
+                return true;
+            } catch (error) {
+                console.error('Error sending settlement to Google Sheets:', error);
+                return false;
+            }
+        }
+
+        // Load entries from Google Sheets
+        async function loadFromGoogleSheets() {
+            try {
+                const response = await fetch(GOOGLE_SHEETS_URL);
+                const data = await response.json();
+                if (data.success && data.entries) {
+                    entries = data.entries;
+                    localStorage.setItem('expenses', JSON.stringify(entries));
+                    console.log('Loaded from Google Sheets:', entries.length, 'entries');
+                    return true;
+                }
+            } catch (error) {
+                console.error('Error loading from Google Sheets:', error);
+            }
+            return false;
+        }
+
+        // Sync all entries to Google Sheets
+        async function syncToGoogleSheets() {
+            try {
+                // Show loading message
+                const loadingMsg = document.createElement('div');
+                loadingMsg.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,255,127,0.9); padding: 30px 50px; border-radius: 20px; z-index: 3000; font-size: 1.5rem; font-weight: 700; color: white; box-shadow: 0 0 40px rgba(0,255,127,0.6);';
+                loadingMsg.textContent = '🔄 מסנכרן...';
+                document.body.appendChild(loadingMsg);
+
+                // Send all entries one by one
+                let successCount = 0;
+                for (const entry of entries) {
+                    try {
+                        await sendToGoogleSheets(entry);
+                        successCount++;
+                    } catch (error) {
+                        console.error('Error syncing entry:', entry.id, error);
+                    }
+                    // Small delay between requests
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                // Remove loading message
+                loadingMsg.remove();
+
+                // Show success
+                alert(`✅ סנכרון הושלם!\n\n${successCount} רשומות נשלחו ל-Google Sheets.`);
+                
+                return true;
+            } catch (error) {
+                console.error('Error syncing to Google Sheets:', error);
+                alert('❌ שגיאה בסנכרון. נסה שוב.');
+                return false;
+            }
+        }
+
+        // Get month key from date
+        function getMonthKey(dateStr) {
+            // Support both . and / separators
+            const parts = dateStr.split(/[./]/);
+            if (parts.length >= 3) {
+                // Format: DD.MM.YYYY or DD/MM/YYYY
+                return `${parts[1]}-${parts[2]}`; // MM-YYYY
+            }
+            return null;
+        }
+
+        // Get current month key
+        function getCurrentMonthKey() {
+            const now = new Date();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            return `${month}-${year}`;
+        }
+
+        // Get month name in Hebrew
+        function getMonthName(monthKey) {
+            const months = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 
+                          'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+            const [month, year] = monthKey.split('-');
+            return `${months[parseInt(month) - 1]} ${year}`;
+        }
+
+        // Calculate total Mika offset for a month (only active entries)
+        function getMikaOffsetForMonth(monthKey) {
+            return entries
+                .filter(e => e.category === 'מיקה' && getMonthKey(e.date) === monthKey && !e.settled)
+                .reduce((sum, e) => sum + e.offsetAmount, 0);
+        }
+
+        // Populate month filter
+        function populateMonthFilter() {
+            const monthFilter = document.getElementById('monthFilter');
+            const monthsSet = new Set();
+            
+            // Add current month
+            const currentMonthKey = getCurrentMonthKey();
+            monthsSet.add(currentMonthKey);
+            
+            // Add months from entries
+            entries.forEach(entry => {
+                const monthKey = getMonthKey(entry.date);
+                if (monthKey) monthsSet.add(monthKey);
+            });
+
+            // Sort months (newest first)
+            const sortedMonths = Array.from(monthsSet).sort((a, b) => {
+                const [monthA, yearA] = a.split('-').map(Number);
+                const [monthB, yearB] = b.split('-').map(Number);
+                if (yearB !== yearA) return yearB - yearA;
+                return monthB - monthA;
+            });
+
+            monthFilter.innerHTML = sortedMonths.map(monthKey => {
+                const isCurrent = monthKey === currentMonthKey;
+                return `<option value="${monthKey}" ${isCurrent && !selectedMonth ? 'selected' : ''}>
+                    ${getMonthName(monthKey)}${isCurrent ? ' (נוכחי)' : ''}
+                </option>`;
+            }).join('');
+
+            if (selectedMonth) {
+                monthFilter.value = selectedMonth;
+            }
+        }
+
+        // Month filter change
+        document.getElementById('monthFilter').addEventListener('change', function() {
+            selectedMonth = this.value;
+            displayEntries();
+        });
+
+        // Current month button
+        document.getElementById('currentMonthBtn').addEventListener('click', function() {
+            selectedMonth = null;
+            document.getElementById('monthFilter').value = getCurrentMonthKey();
+            displayEntries();
+        });
+
+        // Form submission
+        document.getElementById('expenseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validate category
+            if (!document.getElementById('category').value) {
+                alert('נא לבחור קטגוריה');
+                return;
+            }
+
+            // Validate amount
+            const amountValue = parseFloat(document.getElementById('amount').value);
+            if (!amountValue || amountValue <= 0) {
+                alert('נא להזין סכום תקין');
+                return;
+            }
+
+            // Get payer value
+            const payerRadio = document.querySelector('input[name="payer"]:checked');
+            if (!payerRadio) {
+                alert('נא לבחור מי שילם');
+                return;
+            }
+
+            const entry = {
+                id: Date.now(),
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                recurring: document.querySelector('input[name="recurring"]:checked').value,
+                date: document.getElementById('date').value,
+                amount: amountValue,
+                splitHalf: document.querySelector('input[name="splitHalf"]:checked').value,
+                offsetAmount: parseFloat(offsetAmountDisplay.textContent.replace('₪', '')),
+                payer: payerRadio.value
+            };
+
+            // If it's a recurring payment, save it separately
+            if (entry.recurring === 'yes') {
+                const recurringPayment = {
+                    id: entry.id,
+                    category: entry.category,
+                    description: entry.description,
+                    amount: entry.amount,
+                    splitHalf: entry.splitHalf,
+                    offsetAmount: entry.offsetAmount,
+                    payer: entry.payer
+                };
+                
+                recurringPayments.push(recurringPayment);
+                localStorage.setItem('recurringPayments', JSON.stringify(recurringPayments));
+            }
+
+            entries.unshift(entry);
+            localStorage.setItem('expenses', JSON.stringify(entries));
+
+            // Send to Google Sheets
+            sendToGoogleSheets(entry);
+
+            // Show success animation
+            showSuccessAnimation();
+
+            // Reset form
+            this.reset();
+            updateDateTime();
+            updateOffsetAmount();
+            
+            // Reset payer to ענבל
+            document.getElementById('payerInbal').checked = true;
+
+            // Reset to current month and refresh display
+            selectedMonth = null;
+            populateMonthFilter();
+            displayEntries();
+            displayRecurringPayments();
+            
+            // Highlight the new entry
+            setTimeout(() => {
+                const firstEntry = document.querySelector('.entry-card');
+                if (firstEntry) {
+                    firstEntry.classList.add('just-added');
+                }
+            }, 100);
+        });
+
+        // Display entries
+        function displayEntries() {
+            const entriesList = document.getElementById('entriesList');
+            const summaryCard = document.getElementById('summaryCard');
+            const currentMonthKey = selectedMonth || getCurrentMonthKey();
+
+            // Filter entries for selected month
+            const monthEntries = entries.filter(entry => getMonthKey(entry.date) === currentMonthKey);
+            
+            // Separate settled and active entries
+            const activeEntries = monthEntries.filter(entry => !entry.settled);
+            const settledEntries = monthEntries.filter(entry => entry.settled);
+
+            if (monthEntries.length === 0) {
+                entriesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💫</div>
+                        <p>אין רשומות לחודש ${getMonthName(currentMonthKey)}</p>
+                    </div>
+                `;
+                summaryCard.style.display = 'none';
+                return;
+            }
+
+            summaryCard.style.display = 'block';
+
+            // Calculate totals for the month (only active entries, not settled)
+            let inbalTotal = 0;
+            let eliavTotal = 0;
+            let mikaTotal = 0;
+
+            activeEntries.forEach(entry => {
+                if (entry.payer === 'ענבל') {
+                    inbalTotal += entry.offsetAmount;
+                } else {
+                    eliavTotal += entry.offsetAmount;
+                }
+                
+                if (entry.category === 'מיקה') {
+                    mikaTotal += entry.offsetAmount;
+                }
+            });
+
+            const balance = Math.abs(inbalTotal - eliavTotal);
+            const balanceOwner = inbalTotal > eliavTotal ? 'ענבל צריכה לקבל' : 'אליאב צריך לקבל';
+
+            // Add Mika summary if there are Mika expenses
+            let mikaSummaryHTML = '';
+            if (mikaTotal > 0) {
+                const remainingMika = Math.max(0, 200 - mikaTotal);
+                mikaSummaryHTML = `
+                    <div class="summary-item" style="border: 2px solid rgba(255, 165, 0, 0.3);">
+                        <div class="summary-label">מיקה לחודש (מקסימום 200 ₪)</div>
+                        <div class="summary-value" style="color: #ffa500;">₪${mikaTotal.toFixed(2)} / 200</div>
+                        <div style="margin-top: 8px; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                            נותר: ₪${remainingMika.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Update summary with Mika info
+            document.querySelector('.summary-grid').innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-label">סה"כ ענבל שילמה</div>
+                    <div class="summary-value">₪${inbalTotal.toFixed(2)}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">סה"כ אליאב שילם</div>
+                    <div class="summary-value">₪${eliavTotal.toFixed(2)}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">יתרה לקיזוז</div>
+                    <div class="summary-value">₪${balance.toFixed(2)} (${balanceOwner})</div>
+                </div>
+                ${mikaSummaryHTML}
+            `;
+
+            // Display entries
+            let entriesHTML = '';
+            
+            // Active entries first
+            if (activeEntries.length > 0) {
+                entriesHTML += activeEntries.map(entry => `
+                    <div class="entry-card">
+                        <button class="delete-btn" onclick="deleteEntry('${entry.id}')">🗑️</button>
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-category">${entry.category}</div>
+                                ${entry.description ? `<div style="color: rgba(255,255,255,0.6); margin-top: 5px;">${entry.description}</div>` : ''}
+                                ${entry.recurring === 'yes' ? `<div style="color: var(--neon-purple); margin-top: 5px; font-weight: 600;">🔄 תשלום קבוע</div>` : ''}
+                            </div>
+                            <div class="entry-amount">₪${entry.amount.toFixed(2)}</div>
+                        </div>
+                        <div class="entry-details">
+                            <div class="entry-detail">
+                                <strong style="color: var(--neon-cyan);">${entry.payer}</strong>
+                                <span class="entry-detail-label">שילם/ה</span>
+                            </div>
+                            <div class="entry-detail">
+                                <strong style="color: var(--neon-purple);">₪${entry.offsetAmount.toFixed(2)}</strong>
+                                <span class="entry-detail-label">קיזוז</span>
+                            </div>
+                            <div class="entry-detail">
+                                <span class="entry-detail-label">${entry.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Settled entries with special styling
+            if (settledEntries.length > 0) {
+                entriesHTML += `
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid rgba(255,255,255,0.1);">
+                        <div style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 15px; font-weight: 600;">
+                            ✅ רשומות שקוזזו (${settledEntries.length})
+                        </div>
+                `;
+                
+                entriesHTML += settledEntries.map(entry => `
+                    <div class="entry-card" style="opacity: 0.5; border-color: rgba(0,255,127,0.2);">
+                        <button class="delete-btn" onclick="deleteEntry('${entry.id}')" style="opacity: 0.5;">🗑️</button>
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-category" style="color: rgba(255,255,255,0.6);">${entry.category}</div>
+                                ${entry.description ? `<div style="color: rgba(255,255,255,0.4); margin-top: 5px;">${entry.description}</div>` : ''}
+                                <div style="color: #00ff7f; margin-top: 5px; font-weight: 600; font-size: 0.85rem;">✅ קוזז</div>
+                            </div>
+                            <div class="entry-amount" style="color: rgba(255,255,255,0.5);">₪${entry.amount.toFixed(2)}</div>
+                        </div>
+                        <div class="entry-details">
+                            <div class="entry-detail">
+                                <strong style="color: rgba(0,255,249,0.5);">${entry.payer}</strong>
+                                <span class="entry-detail-label">שילם/ה</span>
+                            </div>
+                            <div class="entry-detail">
+                                <strong style="color: rgba(188,19,254,0.5);">₪${entry.offsetAmount.toFixed(2)}</strong>
+                                <span class="entry-detail-label">קיזוז</span>
+                            </div>
+                            <div class="entry-detail">
+                                <span class="entry-detail-label">${entry.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                entriesHTML += '</div>';
+            }
+            
+            entriesList.innerHTML = entriesHTML;
+        }
+
+        // Initial display
+        (async function() {
+            // Check and create recurring entries for new month
+            checkAndCreateRecurringEntries();
+            
+            // Try to load from Google Sheets first
+            const loaded = await loadFromGoogleSheets();
+            
+            // Display recurring payments
+            displayRecurringPayments();
+            
+            // Populate month filter and display
+            populateMonthFilter();
+            displayEntries();
+            
+            if (loaded) {
+                console.log('✅ נתונים נטענו מ-Google Sheets');
+            } else {
+                console.log('ℹ️ משתמש בנתונים מקומיים');
+            }
+        })();
+
+        // Delete entry function
+        window.deleteEntry = async function(entryId) {
+            // Show confirmation
+            const confirmDelete = confirm('האם אתה בטוח שברצונך למחוק רשומה זו?');
+            
+            if (confirmDelete) {
+                // Find and remove entry
+                const entryIndex = entries.findIndex(e => e.id == entryId);
+                
+                if (entryIndex !== -1) {
+                    // Remove from array
+                    entries.splice(entryIndex, 1);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('expenses', JSON.stringify(entries));
+                    
+                    // Refresh display
+                    populateMonthFilter();
+                    displayEntries();
+                    
+                    alert('✅ הרשומה נמחקה!\n\nשים לב: אם תרצה למחוק גם מ-Google Sheets, תעשה זאת ידנית בגיליון.');
+                }
+            }
+        };
+
+        // Reset button functionality
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            const currentMonthKey = selectedMonth || getCurrentMonthKey();
+            const currentMonthEntries = entries.filter(entry => getMonthKey(entry.date) === currentMonthKey);
+            
+            if (currentMonthEntries.length === 0) {
+                alert('אין רשומות לסגירה בחודש הנוכחי');
+                return;
+            }
+
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-icon">💰</div>
+                    <div class="modal-title">סגירת קיזוז</div>
+                    <div class="modal-text">
+                        פעולה זו תסגור את הקיזוז של <strong>${getMonthName(currentMonthKey)}</strong><br>
+                        הסיכומים יתאפסו אבל הרשומות יישארו בהיסטוריה
+                    </div>
+                    <div class="modal-warning">
+                        ℹ️ ${currentMonthEntries.length} רשומות יסומנו כ"קוזזו"
+                    </div>
+                    <div class="modal-input-group">
+                        <label class="modal-input-label">
+                            להמשך, הקלד: <strong style="color: #00ff7f;">קיזוז</strong>
+                        </label>
+                        <input type="text" class="modal-input" id="resetConfirmInput" placeholder="הקלד: קיזוז" autocomplete="off">
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="modal-btn modal-btn-cancel" id="cancelResetBtn">ביטול</button>
+                        <button class="modal-btn modal-btn-confirm" id="confirmResetBtn" disabled>אישור סגירה</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+
+            const confirmInput = document.getElementById('resetConfirmInput');
+            const confirmBtn = document.getElementById('confirmResetBtn');
+            const cancelBtn = document.getElementById('cancelResetBtn');
+
+            // Enable confirm button only when "קיזוז" is typed
+            confirmInput.addEventListener('input', function() {
+                if (this.value.trim() === 'קיזוז') {
+                    confirmBtn.disabled = false;
+                    confirmBtn.classList.add('enabled');
+                } else {
+                    confirmBtn.disabled = true;
+                    confirmBtn.classList.remove('enabled');
+                }
+            });
+
+            // Cancel button
+            cancelBtn.addEventListener('click', function() {
+                modal.remove();
+            });
+
+            // Click outside to close
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+
+            // Confirm settlement
+            confirmBtn.addEventListener('click', function() {
+                if (confirmInput.value.trim() === 'קיזוז') {
+                    // Mark all entries of current month as settled
+                    entries = entries.map(entry => {
+                        if (getMonthKey(entry.date) === currentMonthKey) {
+                            return { ...entry, settled: true };
+                        }
+                        return entry;
+                    });
+                    
+                    localStorage.setItem('expenses', JSON.stringify(entries));
+                    
+                    // Send settlement to Google Sheets
+                    sendSettlementToGoogleSheets(currentMonthKey);
+                    
+                    // Close modal
+                    modal.remove();
+                    
+                    // Refresh display
+                    displayEntries();
+                    
+                    // Show success message
+                    alert('✅ הקיזוז נסגר בהצלחה! הסיכומים אופסו והרשומות נשמרו בהיסטוריה');
+                }
+            });
+
+            // Focus on input
+            setTimeout(() => confirmInput.focus(), 100);
+        });
+    </script>
+</body>
+</html>
